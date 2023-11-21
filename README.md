@@ -19,7 +19,7 @@ Flap-tastrophe is a Flappy Bird clone built with Java and the LibGDX framework. 
 
 ## Controls
 
-SPACE / LMB - Flap
+* SPACE / LMB - Flap
 
 ## Roadmap
 
@@ -30,10 +30,10 @@ SPACE / LMB - Flap
 ## Assets
 ### Textures
 
-https://github.com/samuelcust/flappy-bird-assets
-https://opengameart.org/content/bevouliin-free-flying-bird-game-character-sprite-sheets
-https://opengameart.org/content/bevouliin-free-game-background-for-game-developers
-https://www.dafont.com/super-mario-256.font
+https://github.com/samuelcust/flappy-bird-assets\
+https://opengameart.org/content/bevouliin-free-flying-bird-game-character-sprite-sheets\
+https://opengameart.org/content/bevouliin-free-game-background-for-game-developers\
+https://www.dafont.com/super-mario-256.font\
 
 ### Music / SFX
 
