@@ -1,6 +1,8 @@
 # Flap-tastrophe
 
-Flap-tastrophe is a Flappy Bird clone built with Java and the LibGDX framework. This project was born out of curiosity and a desire to explore new tools, LibGDX being one I hadn't worked with before. 
+Flap-tastrophe is a Flappy Bird clone built with Java and the LibGDX framework. This project was born out of curiosity and a desire to explore new tools, LibGDX being one I hadn't worked with before.
+
+![Main Menu Screen of Flap-tastrophe](https://i.imgur.com/U7CKHuB.png)
 
 ## Installation
 ### Windows
