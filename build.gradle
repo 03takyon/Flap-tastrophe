@@ -42,6 +42,10 @@ allprojects {
 project(":desktop") {
     apply plugin: "java-library"
 
+    compileJava {
+        sourceCompatibility = '1.8'
+        targetCompatibility = '1.8'
+    }
 
     dependencies {
         implementation project(":core")
@@ -54,6 +58,10 @@ project(":desktop") {
 project(":core") {
     apply plugin: "java-library"
 
+    compileJava {
+        sourceCompatibility = '1.8'
+        targetCompatibility = '1.8'
+    }
 
     dependencies {
         api "com.badlogicgames.gdx:gdx:$gdxVersion"
