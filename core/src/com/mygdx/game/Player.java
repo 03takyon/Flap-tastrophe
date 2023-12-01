@@ -60,15 +60,15 @@ public class Player {
 		// synchronize the playerRectangle's vertical position with the updated playerSprite position for accurate collision detection
 		playerRectangle.y = playerSprite.getY();
 		
-		collisionCheck();
+		handleCollision();
 	}
 	
-	public void collisionCheck() {
+	public void handleCollision() {
 		// check for collision with the ceiling
 		if (playerSprite.getY() + 68f > 600f) {
 			canFlap = false;
 			
-			pipeManager.setPlayerCollision(true);
+			EventManager.notify(EventTypes.COLLISION, null);
 			
 			playerSprite.setY(600f - 68f);
 			playerSprite.setTexture(playerTextureDown);
@@ -86,7 +86,7 @@ public class Player {
 			if (playerRectangle.overlaps(pipe.getPipeRectangle())) {
 				canFlap = false;
 				
-				pipeManager.setPlayerCollision(true);
+				EventManager.notify(EventTypes.COLLISION, null);
 				
 				playerSprite.setTexture(playerTextureDown);
 			}

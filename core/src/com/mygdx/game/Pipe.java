@@ -28,10 +28,10 @@ public class Pipe {
 		pipeRectangle.height = pipeSprite.getHeight();
 	}
 	
-	public void movePipe(float deltaTime, boolean playerCollision) {
+	public void movePipe(float deltaTime, boolean collisionCheck) {
 		// calculate horizontal movement based on defined speed and frame time if collision is not detected
 		// move the pipeSprite and its rectangle leftwards to simulate player movement
-		if (!playerCollision) {
+		if (!collisionCheck) {
 			velocityX = moveSpeed * deltaTime;
 			
 			pipeSprite.translateX(-velocityX);

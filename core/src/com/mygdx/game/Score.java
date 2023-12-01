@@ -7,14 +7,14 @@ import com.badlogic.gdx.utils.Timer;
 public class Score {
 	private int score;
 	private int highScore;
-	private Player player;
 	private Preferences prefs = Gdx.app.getPreferences("prefs");
+	private boolean collisionCheck = false;
 	
-	public Score(Player player) {
-		this.player = player;
-		
+	public Score() {
 		// get the highest score from prefs defaulting to 0 if nothing is found
 		highScore = prefs.getInteger("highScore", 0);
+		
+		EventManager.subscribe(EventTypes.COLLISION, this::handleCollision);
 	}
 	
 	public void calculateScore() {
@@ -22,7 +22,7 @@ public class Score {
 		Timer.schedule(new Timer.Task() {
 			@Override
 			public void run() {
-				if (player.getCanFlap()) {
+				if (!collisionCheck) {
 					score++;
 				} else {
 					this.cancel();
@@ -43,6 +43,19 @@ public class Score {
 		}
 	}
 	
+	// returns an integer (1-5) based on the score to determine the amount of difficulty scaling
+	public int scalingAmount() {
+		if (score > 25) {
+			return Math.min((score - 1) / 25, 5);
+		}
+		
+		return 0;
+	}
+	
+	private void handleCollision(Object data) {
+		collisionCheck = true;
+	}
+	
 	public int getScore() {
 		return score;
 	}
@@ -51,7 +64,7 @@ public class Score {
 		return highScore;
 	}
 	
-	public void dispose() {
-		player.dispose();
+	public int getScalingAmount() {
+		return scalingAmount();
 	}
 }

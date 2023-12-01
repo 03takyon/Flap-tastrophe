@@ -9,22 +9,18 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.ScreenUtils;
-import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
-import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
 
 public class MainMenuScreen implements Screen {
-	private OrthographicCamera camera;
-	private SpriteBatch batch;
-	private Background background;
 	private Game game;
+	private OrthographicCamera camera;
+	private Background background;
 	private Player player;
 	private boolean isTextureDown;
 	private float timer;
-	private FreeTypeFontGenerator generator;
-	private FreeTypeFontParameter titleParameter;
 	private BitmapFont titleText;
 	private BitmapFont startText;
-	private FreeTypeFontParameter startParameter;
+	private Fonts fonts;
+	private SpriteBatch batch;
 
 	public MainMenuScreen(Game game) {
 		this.game = game;
@@ -44,22 +40,11 @@ public class MainMenuScreen implements Screen {
 		
 		isTextureDown = true;
 		
-		generator = new FreeTypeFontGenerator(Gdx.files.internal("SuperMario256.ttf"));
+		fonts = new Fonts();
 		
-		titleParameter = new FreeTypeFontParameter();
-		titleParameter.size = 60;
-		titleParameter.borderColor = Color.BLACK;
-		titleParameter.borderWidth = 3f;
+		titleText = fonts.createFont(60, 3, Color.WHITE);
 		
-		titleText = generator.generateFont(titleParameter);
-		
-		startParameter = new FreeTypeFontParameter();
-		startParameter.size = 24;
-		
-		startText = generator.generateFont(startParameter);
-		startText.setColor(0, 0, 0, 1f);
-		
-		generator.dispose();
+		startText = fonts.createFont(24, 0, Color.BLACK);
 	}
 
 	@Override
@@ -102,7 +87,7 @@ public class MainMenuScreen implements Screen {
 			
 			game.setScreen(new GameScreen(game));
 			
-			this.dispose();
+			dispose();
 			
 			return;
 		}
@@ -126,10 +111,11 @@ public class MainMenuScreen implements Screen {
 
 	@Override
 	public void dispose() {
-		batch.dispose();
 		background.dispose();
 		player.dispose();
 		titleText.dispose();
 		startText.dispose();
+		fonts.dispose();
+		batch.dispose();
 	}
 }

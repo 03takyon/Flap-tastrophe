@@ -8,24 +8,20 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
-import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
 import com.badlogic.gdx.utils.ScreenUtils;
 
 public class GameScreen implements Screen {
+	private Game game;
 	private OrthographicCamera camera;
-	private SpriteBatch batch;
 	private Player player;
 	private PipeManager pipeManager;
 	private BitmapFont scoreText;
 	private Score score;
 	private Background background;
-	private Game game;
-	private FreeTypeFontGenerator generator;
-	private FreeTypeFontParameter gameOverParameter;
 	private BitmapFont gameOverText;
-	private FreeTypeFontParameter restartParameter;
 	private BitmapFont restartText;
+	private Fonts fonts;
+	private SpriteBatch batch;
 	
 	public GameScreen(Game game) {
 		this.game = game;
@@ -46,29 +42,17 @@ public class GameScreen implements Screen {
 		scoreText = new BitmapFont();
 		scoreText.setColor(0, 0, 0, 1f);
 		
-		score = new Score(player);
+		score = new Score();
 		score.calculateScore();
 		
 		background = new Background();
 		background.playMusic();
 		
-		generator = new FreeTypeFontGenerator(Gdx.files.internal("SuperMario256.ttf"));
+		fonts = new Fonts();
 		
-		gameOverParameter = new FreeTypeFontParameter();
-		gameOverParameter.size = 72;
-		gameOverParameter.borderColor = Color.BLACK;
-		gameOverParameter.borderWidth = 3f;
+		gameOverText = fonts.createFont(72, 3, Color.RED);
 		
-		gameOverText = generator.generateFont(gameOverParameter);
-		gameOverText.setColor(1f, 0, 0, 1f);
-		
-		restartParameter = new FreeTypeFontParameter();
-		restartParameter.size = 24;
-		
-		restartText = generator.generateFont(restartParameter);
-		restartText.setColor(0, 0, 0, 1f);
-		
-		generator.dispose();
+		restartText = fonts.createFont(24, 0, Color.BLACK);
 	}
 
 	@Override
@@ -97,12 +81,9 @@ public class GameScreen implements Screen {
 			if (Gdx.input.isButtonJustPressed(Input.Buttons.LEFT)) {
 				score.saveHighScore();
 				
-				// restart the game by setting up a new game screen instance
-				// ensures all game elements are reset without leftover data
 				game.setScreen(new GameScreen(game));
 				
-				// call dispose to clean up current screen's resources preventing memory leaks
-				this.dispose();
+				dispose();
 				
 				return;
 			}
@@ -133,13 +114,13 @@ public class GameScreen implements Screen {
 	
 	@Override
 	public void dispose () {
-		batch.dispose();
 		player.dispose();
 		pipeManager.dispose();
 		background.dispose();
 		scoreText.dispose();
 		gameOverText.dispose();
 		restartText.dispose();
-		score.dispose();
+		fonts.dispose();
+		batch.dispose();
 	}
 }

@@ -11,10 +11,14 @@ import com.badlogic.gdx.utils.Timer;
 public class PipeManager {
 	private ArrayList<Pipe> pipes = new ArrayList<Pipe>();
 	private Texture pipeTexture;
-	private boolean playerCollision = false;
+	private boolean collisionCheck = false;
+	private float initialDelay = 1f;
+	private float spawnInterval = 2f;
 	
 	public PipeManager() {
 		pipeTexture = new Texture(Gdx.files.internal("pipe.png"));
+		
+		EventManager.subscribe(EventTypes.COLLISION, this::handleCollision);
 	}
 	
 	public void spawn() {
@@ -23,7 +27,7 @@ public class PipeManager {
 		Timer.schedule(new Timer.Task() {
 			@Override
 			public void run() {
-				if (!playerCollision) {
+				if (!collisionCheck) {
 					Pipe pipe = new Pipe(800f, pipeTexture);
 					
 					pipes.add(pipe);
@@ -31,13 +35,13 @@ public class PipeManager {
 					this.cancel();
 				}
 			}
-		}, 1f, 2f);
+		}, initialDelay, spawnInterval);
 	}
 	
 	public void draw(SpriteBatch batch, float deltaTime) {
 		// iterate through each pipe updating their position and rendering them on the screen
 		for (Pipe p : pipes) {
-			p.movePipe(deltaTime, playerCollision);
+			p.movePipe(deltaTime, collisionCheck);
 			p.getPipeSprite().draw(batch);
 		}
 	}
@@ -56,12 +60,12 @@ public class PipeManager {
 		}
 	}
 	
-	public ArrayList<Pipe> getPipes() {
-		return pipes;
+	private void handleCollision(Object data) {
+		collisionCheck = true;
 	}
 	
-	public void setPlayerCollision(boolean playerCollision) {
-		this.playerCollision = playerCollision;
+	public ArrayList<Pipe> getPipes() {
+		return pipes;
 	}
 	
 	public void dispose() {
