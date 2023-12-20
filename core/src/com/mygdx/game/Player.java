@@ -82,8 +82,8 @@ public class Player {
 		}
 		
 		// check for collision with pipes
-		for (Pipe pipe : pipeManager.getPipes()) {
-			if (playerRectangle.overlaps(pipe.getPipeRectangle())) {
+		for (Pipe p : pipeManager.getPipes()) {
+			if (playerRectangle.overlaps(p.getPipeRectangle()) && !pipeManager.getIsGhost()) {
 				canFlap = false;
 				
 				EventManager.notify(EventTypes.COLLISION, null);

@@ -2,13 +2,15 @@ package com.mygdx.game;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
-import com.badlogic.gdx.utils.Timer;
+import com.badlogic.gdx.math.MathUtils;
 
 public class Score {
 	private int score;
 	private int highScore;
 	private Preferences prefs = Gdx.app.getPreferences("prefs");
 	private boolean collisionCheck = false;
+	private float scalingTimer = 0;
+	private float scoreTimer = 0;
 	
 	public Score() {
 		// get the highest score from prefs defaulting to 0 if nothing is found
@@ -17,18 +19,17 @@ public class Score {
 		EventManager.subscribe(EventTypes.COLLISION, this::handleCollision);
 	}
 	
-	public void calculateScore() {
+	public void calculateScore(float deltaTime) {
 		// increment score by 1 every second as long as player collision is not detected
-		Timer.schedule(new Timer.Task() {
-			@Override
-			public void run() {
-				if (!collisionCheck) {
-					score++;
-				} else {
-					this.cancel();
-				}
-			}
-		}, 1f, 1f);
+		scoreTimer += deltaTime;
+		
+		if (!collisionCheck && scoreTimer >= 1f) {
+			scoreTimer = 0;
+			
+			score++;
+			
+			notifyDifficulty();
+		}
 	}
 	
 	public void saveHighScore() {
@@ -43,13 +44,32 @@ public class Score {
 		}
 	}
 	
-	// returns an integer (1-5) based on the score to determine the amount of difficulty scaling
+	public void updateScalingTimer(float deltaTime) {
+		scalingTimer += deltaTime;
+	}
+	
+	// returns an integer (1-4) based on the score to determine the amount of difficulty scaling
 	public int scalingAmount() {
-		if (score > 25) {
-			return Math.min((score - 1) / 25, 5);
+		if (scalingTimer >= 5f) {
+			scalingTimer = 0;
+			
+			if (score >= 25) {
+				return MathUtils.random(2, 4);
+			} else {
+				return Math.min(score / 5, 4);
+			}
 		}
 		
 		return 0;
+	}
+	
+	
+	public void notifyDifficulty() {
+		int scalingAmount = scalingAmount();
+		
+		if (scalingAmount > 0) {
+			EventManager.notify(EventTypes.SCORE_CHANGE, scalingAmount);
+		}
 	}
 	
 	private void handleCollision(Object data) {
@@ -62,9 +82,5 @@ public class Score {
 	
 	public int getHighScore() {
 		return highScore;
-	}
-	
-	public int getScalingAmount() {
-		return scalingAmount();
 	}
 }

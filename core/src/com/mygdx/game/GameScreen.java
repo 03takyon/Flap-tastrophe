@@ -35,7 +35,6 @@ public class GameScreen implements Screen {
 		batch = new SpriteBatch();
 		
 		pipeManager = new PipeManager();
-		pipeManager.spawn();
 		
 		player = new Player(pipeManager);
 		
@@ -43,7 +42,6 @@ public class GameScreen implements Screen {
 		scoreText.setColor(0, 0, 0, 1f);
 		
 		score = new Score();
-		score.calculateScore();
 		
 		background = new Background();
 		background.playMusic();
@@ -60,6 +58,12 @@ public class GameScreen implements Screen {
 		float deltaTime = Gdx.graphics.getDeltaTime();
 		
 		ScreenUtils.clear(0, 0, 0, 1f);
+		
+		pipeManager.spawn(deltaTime);
+		pipeManager.updatePipeTimers(deltaTime);
+		
+		score.calculateScore(deltaTime);
+		score.updateScalingTimer(deltaTime);
 		
 		batch.setProjectionMatrix(camera.combined);
 		batch.begin();
@@ -80,6 +84,8 @@ public class GameScreen implements Screen {
 			
 			if (Gdx.input.isButtonJustPressed(Input.Buttons.LEFT)) {
 				score.saveHighScore();
+				
+				Pipe.setMoveSpeed(800f);
 				
 				game.setScreen(new GameScreen(game));
 				

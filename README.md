@@ -25,9 +25,9 @@ Flap-tastrophe is a Flappy Bird clone built with Java and the LibGDX framework. 
 
 ## Roadmap
 
-* Difficulty Scaling: Implement a dynamic difficulty system that ramps up the challenge as your score increases
-* Death Animation: Add a touch of drama with an animation when the player runs into a pipe
-* Code Optimization: Clean up the code to follow the DRY principle, so there's less repitition and more efficiency.
+* [x] Difficulty Scaling: Implement a dynamic difficulty system that ramps up the challenge as your score increases
+* [ ] Death Animation: Add a touch of drama with an animation when the player runs into a pipe
+* [ ] Code Optimization: Clean up the code to follow the DRY principle, so there's less repitition and more efficiency.
 
 ## Assets
 ### Textures
