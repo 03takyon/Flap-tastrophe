@@ -57,6 +57,7 @@ public class PipeManager {
 		for (Pipe p : pipes) {
 			p.movePipe(deltaTime, collisionCheck, moveUp);
 			
+			// updates the pipe's opacity based on the setAlpha flag
 			if (setAlpha) {
 				p.getPipeSprite().setAlpha(0.5f);
 			} else {

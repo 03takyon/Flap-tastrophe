@@ -63,7 +63,7 @@ public class Score {
 		return 0;
 	}
 	
-	
+	// notifies subscribed classes on score changes to update difficulty scaling
 	public void notifyDifficulty() {
 		int scalingAmount = scalingAmount();
 		

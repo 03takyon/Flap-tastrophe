@@ -1,62 +1,48 @@
 package com.mygdx.game;
 
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.ScreenUtils;
 
 public class MainMenuScreen implements Screen {
-	private Game game;
+	private Main game;
 	private OrthographicCamera camera;
-	private Background background;
 	private Player player;
 	private boolean isTextureDown;
-	private float timer;
+	private float animTimer;
 	private BitmapFont titleText;
 	private BitmapFont startText;
-	private Fonts fonts;
-	private SpriteBatch batch;
 
-	public MainMenuScreen(Game game) {
+	public MainMenuScreen(Main game) {
 		this.game = game;
 	}
 	
 	@Override
 	public void show() {
-		camera = new OrthographicCamera();
-		camera.setToOrtho(false, 800f, 600f);
-		
-		batch = new SpriteBatch();
-		
-		background = new Background();
+		camera = game.camera;
 		
 		// passing null for the PipeManager parameter to avoid unnecessary instantiation
 		player = new Player(null);
 		
 		isTextureDown = true;
 		
-		fonts = new Fonts();
+		titleText = game.fonts.createFont(60, 3, Color.WHITE);
 		
-		titleText = fonts.createFont(60, 3, Color.WHITE);
-		
-		startText = fonts.createFont(24, 0, Color.BLACK);
+		startText = game.fonts.createFont(24, 0, Color.BLACK);
 	}
 
 	@Override
 	public void render(float delta) {
 		ScreenUtils.clear(0, 0, 0, 1f);
 		
-		// timer increments based on the time since the last frame
-		timer += Gdx.graphics.getDeltaTime();
+		animTimer += Gdx.graphics.getDeltaTime();
 		
-		// switch isTextureDown to its opposite value every half a second
-		if (timer >= 0.5f) {
-			timer = 0;
+		if (animTimer >= 0.5f) {
+			animTimer = 0;
 			
 			isTextureDown = !isTextureDown;
 		}
@@ -68,18 +54,18 @@ public class MainMenuScreen implements Screen {
 			player.getPlayerSprite().setTexture(player.getPlayerTextureUp());
 		}
 
-		batch.setProjectionMatrix(camera.combined);
-		batch.begin();
+		game.batch.setProjectionMatrix(camera.combined);
+		game.batch.begin();
 		
-		background.draw(batch);
+		game.background.draw(game.batch);
 		
-		player.draw(batch);
+		player.draw(game.batch);
 		
-		titleText.draw(batch, "Flap-tastrophe", 100f, 550f);
+		titleText.draw(game.batch, "Flap-tastrophe", 100f, 550f);
 		
-		startText.draw(batch, "Click anywhere to start", 400f, 300f);
+		startText.draw(game.batch, "Click anywhere to start", 400f, 300f);
 		
-		batch.end();
+		game.batch.end();
 		
 		if (Gdx.input.isButtonJustPressed(Input.Buttons.LEFT)) {
 			// set the player texture to playerTextureDown before switching to the game screen for a smooth transition
@@ -111,11 +97,8 @@ public class MainMenuScreen implements Screen {
 
 	@Override
 	public void dispose() {
-		background.dispose();
 		player.dispose();
 		titleText.dispose();
 		startText.dispose();
-		fonts.dispose();
-		batch.dispose();
 	}
 }
