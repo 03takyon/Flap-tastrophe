@@ -13,6 +13,8 @@ public class Player {
 	private float gravity = -25f;
 	private Texture playerTextureDown;
 	private Texture playerTextureUp;
+	private Texture playerTextureHitUp;
+	private Texture playerTextureHitDown;
 	private Sprite playerSprite;
 	private Rectangle playerRectangle;
 	private PipeManager pipeManager;
@@ -22,6 +24,10 @@ public class Player {
 		playerTextureDown = new Texture(Gdx.files.internal("fly1.png"));
 		
 		playerTextureUp = new Texture(Gdx.files.internal("fly2.png"));
+		
+		playerTextureHitUp = new Texture(Gdx.files.internal("hit1.png"));
+		
+		playerTextureHitDown = new Texture(Gdx.files.internal("hit2.png"));
 		
 		playerSprite = new Sprite(playerTextureDown);
 		playerSprite.setOriginCenter();
@@ -113,8 +119,18 @@ public class Player {
 		return canFlap;
 	}
 	
+	public Texture getPlayerTextureHitUp() {
+		return playerTextureHitUp;
+	}
+	
+	public Texture getPlayerTextureHitDown() {
+		return playerTextureHitDown;
+	}
+	
 	public void dispose() {
 		playerTextureDown.dispose();
 		playerTextureUp.dispose();
+		playerTextureHitUp.dispose();
+		playerTextureHitDown.dispose();
 	}
 }

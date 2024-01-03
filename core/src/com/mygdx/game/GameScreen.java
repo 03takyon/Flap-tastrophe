@@ -1,38 +1,32 @@
 package com.mygdx.game;
 
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.ScreenUtils;
 
 public class GameScreen implements Screen {
-	private Game game;
+	private Main game;
 	private OrthographicCamera camera;
 	private Player player;
 	private PipeManager pipeManager;
 	private BitmapFont scoreText;
 	private Score score;
-	private Background background;
 	private BitmapFont gameOverText;
 	private BitmapFont restartText;
-	private Fonts fonts;
-	private SpriteBatch batch;
+	private float animTimer;
+	private boolean isTextureDown;
 	
-	public GameScreen(Game game) {
+	public GameScreen(Main game) {
 		this.game = game;
 	}
 	
 	@Override
 	public void show () {		
-		camera = new OrthographicCamera();
-		camera.setToOrtho(false, 800f, 600f);
-		
-		batch = new SpriteBatch();
+		camera = game.camera;
 		
 		pipeManager = new PipeManager();
 		
@@ -43,14 +37,11 @@ public class GameScreen implements Screen {
 		
 		score = new Score();
 		
-		background = new Background();
-		background.playMusic();
+		game.background.playMusic();
 		
-		fonts = new Fonts();
+		gameOverText = game.fonts.createFont(72, 3, Color.RED);
 		
-		gameOverText = fonts.createFont(72, 3, Color.RED);
-		
-		restartText = fonts.createFont(24, 0, Color.BLACK);
+		restartText = game.fonts.createFont(24, 0, Color.BLACK);
 	}
 
 	@Override
@@ -65,22 +56,39 @@ public class GameScreen implements Screen {
 		score.calculateScore(deltaTime);
 		score.updateScalingTimer(deltaTime);
 		
-		batch.setProjectionMatrix(camera.combined);
-		batch.begin();
+		game.batch.setProjectionMatrix(camera.combined);
+		game.batch.begin();
 		
-		background.draw(batch);
+		game.background.draw(game.batch);
 		
-		scoreText.draw(batch, "Score: " + score.getScore() + " High Score: " + score.getHighScore(), 10f, 590f);
+		scoreText.draw(game.batch, "Score: " + score.getScore() + " High Score: " + score.getHighScore(), 10f, 590f);
 		
-		pipeManager.draw(batch, deltaTime);
+		pipeManager.draw(game.batch, deltaTime);
 		
-		player.draw(batch);
+		player.draw(game.batch);
+		
+		if (!player.getCanFlap()) {
+			animTimer += deltaTime;
+			
+			if (animTimer >= 0.5f) {
+				animTimer = 0;
+				
+				isTextureDown = !isTextureDown;
+			}
+			
+			// the player texture is updated based on the isTextureDown flag to simulate death animation
+			if (isTextureDown) {
+				player.getPlayerSprite().setTexture(player.getPlayerTextureHitDown());
+			} else {
+				player.getPlayerSprite().setTexture(player.getPlayerTextureHitUp());
+			}
+		}
 		
 		// check for player collision and if the player's y-position is at the bottom of the screen
 		if (!player.getCanFlap() && player.getPlayerSprite().getY() == -14f) {
-			gameOverText.draw(batch, "Game Over", 150f, 350f);
+			gameOverText.draw(game.batch, "Game Over", 150f, 350f);
 			
-			restartText.draw(batch, "Click anywhere to restart", 200f, 250f);
+			restartText.draw(game.batch, "Click anywhere to restart", 200f, 250f);
 			
 			if (Gdx.input.isButtonJustPressed(Input.Buttons.LEFT)) {
 				score.saveHighScore();
@@ -95,7 +103,7 @@ public class GameScreen implements Screen {
 			}
 		}
 		
-		batch.end();
+		game.batch.end();
 		
 		pipeManager.remove();
 		
@@ -122,11 +130,8 @@ public class GameScreen implements Screen {
 	public void dispose () {
 		player.dispose();
 		pipeManager.dispose();
-		background.dispose();
 		scoreText.dispose();
 		gameOverText.dispose();
 		restartText.dispose();
-		fonts.dispose();
-		batch.dispose();
 	}
 }
